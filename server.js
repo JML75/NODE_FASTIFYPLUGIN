@@ -19,7 +19,7 @@ fastify.get('/me', function() {
     return {
         prenom: "jim",
         nom: "Quinn",
-        job: "prof",
+        job: "developpeur",
     }
 })
 
