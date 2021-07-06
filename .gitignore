@@ -1,0 +1,4 @@
+#Dossiers
+node_modules/
+#locl Files 
+package-lock.json
