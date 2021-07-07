@@ -1,4 +1,4 @@
 #Dossiers
 node_modules/
-#locl Files 
+#lock Files 
 package-lock.json

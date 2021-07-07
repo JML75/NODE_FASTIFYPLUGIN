@@ -1,6 +1,10 @@
 // Require the framework and instantiate it
 const fastify = require('fastify')({ logger: true })
 
+const { ObjectId } = require('mongodb')
+
+
+
 
 // connection  fastify à la base de donnée 
 fastify.register(require('fastify-mongodb'), {
@@ -36,20 +40,91 @@ fastify.get('/me', function() {
 
 // declarer la route heroes qui retourne un tableau
 // si on va sur ma route /heroes en get on consulte 
-fastify.get('/heroes', function() {
-    const chanteurs = ['bowie', 'jaegger', 'guilmour']
-    return chanteurs
-})
+// fastify.get('/heroes', function() {
+//     const chanteurs = ['bowie', 'jaegger', 'guilmour']
+//     return chanteurs
+// })
 
 
 
 //si on va sur /heroes en POST on ajoute un nouveau chanteur
 
-fastify.post('/heroes', (request, reply) => {
+fastify.post('/heroes', async(request, reply) => {
+        const collection = fastify.mongo.db.collection("heroes")
+        const result = await collection.insertOne(request.body)
+        return result
+
+    })
+    // fastify.get('/heroes', async() => {
+    //     const collection = fastify.mongo.db.collection("heroes")
+    //     const result = await collection.find({}).toArray()
+    //     return result
+
+//     // result renvoie
+
+// })
+
+fastify.get('/heroes/:heroesId', async(request, reply) => {
+    //on reçoit la requete  du port ecouté et on le recupèr graca à :heroesId
+
+    const heroesId = request.params.heroesId
+
+    // on peut ecrire en code déstructuré  request.params est un objet on peut le récupérer le parametre heroesId avec la syntaxe
+    // const { heroesId } = request.params 
+
+
     const collection = fastify.mongo.db.collection("heroes")
-    collection.insertOne(request.body)
-    return null
+        // on se connecte à la base de donnée et a la collection
+        // et on fait la requête par rapport à l id recherché
+    const result = await collection.findOne({
+        _id: new ObjectId(heroesId)
+            //ObjectID  est une classe et la requete est une chaine de caractère il faut donc creer une nouvelle instance de la classe à partir de la chaine de caractère
+    })
+    return result
+
 })
+
+fastify.get('/heroes/bio/:heroesId', async(request, reply) => {
+    const collection = fastify.mongo.db.collection('heroes')
+    const { heroesId } = request.params
+    const result = await collection.findOne({
+        _id: new ObjectId(heroesId)
+    })
+
+    // destrucuration 
+    const { name, biography, powerstats: { intelligence, speed } } = result
+    // ça remplace
+    // const name = result.name
+    // const biography  = result.biography
+    // const intelligence = result.powersat.intelligence
+    // const speed = result.powersat.speed
+
+    // Template literals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
+
+    // ES6
+    return `${name} connu sous le nom de ${biography["full-name"]}. Je suis née à ${biography["place-of-birth"]}. J'ai ${intelligence} en intelligence, et ${speed} en vitesse.`
+
+    // il suffit de mettre entre  apostrophe inversée  ` `  et les variablme ${var} 
+
+    // ES5 
+    //il aurait fallut concatener  avec 'hihih' + const + 'huhuh' +...
+})
+
+fastify.delete('/heroes/:heoresId', async(request, reply) => {
+    const collection = fastify.mongo.db.collection('heroes')
+    const { heroesId } = request.params
+    const result = await collection.findOneAndDelete({
+        _id: new ObjectId(heroesId)
+    })
+    return result
+
+
+
+})
+
+
+
+
 
 // Run the server!
 const start = async() => {
