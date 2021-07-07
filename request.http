@@ -1,5 +1,9 @@
 GET http://localhost:4000/me
 
+### 
+
+GET http://localhost:4000/chanteurs
+
 ###
 
 GET http://localhost:4000/heroes
@@ -9,8 +13,8 @@ POST http://localhost:4000/heroes
 Content-Type: application/json
 
 {
-	"id": "69",
-	"name": "Batman",
+	"id": "70",
+	"name": "Robin",
 	"powerstats": {
 		"intelligence": "81",
 		"strength": "40",
@@ -41,4 +45,4 @@ GET http://localhost:4000/heroes/60e46eb329f03fa2388dab80
 GET http://localhost:4000/heroes/bio/60e46eb329f03fa2388dab80
 
 ###
-DELETE http://localhost:4000/heroes/60e45962edd30594e0eaafdf
+DELETE http://localhost:4000/heroes/60e471bd6dbe43a4836de078

@@ -1,23 +1,17 @@
 // Require the framework and instantiate it
 const fastify = require('fastify')({ logger: true })
-
+    //cela chage le framework fastify dans la variable fastify ce qui devient un objet pour utiliser les methodes
+    // require l'objet Object Id de mondodb
 const { ObjectId } = require('mongodb')
-
-
-
 
 // connection  fastify à la base de donnée 
 fastify.register(require('fastify-mongodb'), {
+    forceClose: true,
     // force to close the mongodb connection when app stopped
     // the default value is false
-    forceClose: true,
-
     url: 'mongodb://localhost:27017/superheroes'
-
+        // copié deousi mongodb
 })
-
-// cela chage le framework fastify dans la variable fastify ce qui devient un objet pour utiliser les methodes
-
 
 //  API REST
 // GET  - READ
@@ -25,7 +19,7 @@ fastify.register(require('fastify-mongodb'), {
 // PATCH  / PUT - UPDATE
 // DELETE -DELETE
 
-// Declare a route
+// Declare a route d'ou vindra la requête url
 fastify.get('/', (request, reply) => {
     return { hello: 'world' }
 })
@@ -36,36 +30,43 @@ fastify.get('/me', function() {
         nom: "Quinn",
         job: "developpeur WEB",
     }
+    // delarer la toute me  en GET 
 })
 
-// declarer la route heroes qui retourne un tableau
-// si on va sur ma route /heroes en get on consulte 
-// fastify.get('/heroes', function() {
-//     const chanteurs = ['bowie', 'jaegger', 'guilmour']
-//     return chanteurs
-// })
-
-
-
-//si on va sur /heroes en POST on ajoute un nouveau chanteur
+fastify.get('/chanteurs', function() {
+    // declarer la route chanteurs en GET   qui retourne un tableau
+    // si on va sur ma route /chanteurs  en GET on consulte 
+    const chanteurs = ['bowie', 'jaegger', 'guilmour']
+    return chanteurs
+})
 
 fastify.post('/heroes', async(request, reply) => {
-        const collection = fastify.mongo.db.collection("heroes")
-        const result = await collection.insertOne(request.body)
-        return result
+    //si on va sur /heroes en POST on ajoute un nouveau hero
+    // dont les données sont contenues dans request
+    const collection = fastify.mongo.db.collection("heroes")
+        //on se connecte à mongo DB 
+    const result = await collection.insertOne(request.body)
+        //on met l'action dans une variable pour regarder le resultat
+        // on rajoute une entree à la collectction heroes qui est dans le body du request
+    return result
 
-    })
-    // fastify.get('/heroes', async() => {
-    //     const collection = fastify.mongo.db.collection("heroes")
-    //     const result = await collection.find({}).toArray()
-    //     return result
+    // la nouvelle entrée contenie dans le body se requuest est stockées dans la collection heroes de la base de donnée
 
-//     // result renvoie
+    // async et await c'est pour rendre la fonction synchrone et ne pas recevoir une promesse
 
-// })
+})
+
+fastify.get('/heroes', async() => {
+    const collection = fastify.mongo.db.collection("heroes")
+    const result = await collection.find({}).toArray()
+        //collection.find({}) retourne  toutes les entrées de la collection
+        // collection.find({}).toArray()  convertit le retour en tableau
+    return result
+})
 
 fastify.get('/heroes/:heroesId', async(request, reply) => {
-    //on reçoit la requete  du port ecouté et on le recupèr graca à :heroesId
+    //on reçoit la requete (// /heroes/69 GET - Obtiens le héros ayant l'id 69)  du port ecouté et on le recupère graca à :heroesId
+
 
     const heroesId = request.params.heroesId
 
@@ -106,24 +107,24 @@ fastify.get('/heroes/bio/:heroesId', async(request, reply) => {
 
     // il suffit de mettre entre  apostrophe inversée  ` `  et les variablme ${var} 
 
-    // ES5 
-    //il aurait fallut concatener  avec 'hihih' + const + 'huhuh' +...
+    // Version ES5 (vieux JS)
+    // const name = result.name
+    // const fullName = result.biography["full-name"]
+    // const placeOfBirth = result.biography["full-name"]
+    // const intelligence = result.powerstats.intelligence
+    // const speed = result.powerstats.speed
+
+    // return name + " connu sous le nom de " + fullName + ". Je suis née à " + placeOfBirth + ". J'ai " + intelligence + " en intelligence, et + " + speed + " en vitesse."
 })
 
-fastify.delete('/heroes/:heoresId', async(request, reply) => {
+fastify.delete('/heroes/:heroesId', async(request, reply) => {
     const collection = fastify.mongo.db.collection('heroes')
     const { heroesId } = request.params
     const result = await collection.findOneAndDelete({
         _id: new ObjectId(heroesId)
     })
     return result
-
-
-
 })
-
-
-
 
 
 // Run the server!
