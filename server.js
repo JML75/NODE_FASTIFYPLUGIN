@@ -13,7 +13,8 @@ fastify.register(require('fastify-mongodb'), {
         // copié deousi mongodb
 })
 
-//  API REST
+// API REST
+//---------------------------------
 // GET  - READ
 // POST - CREATE
 // PATCH  / PUT - UPDATE
@@ -121,10 +122,73 @@ fastify.delete('/heroes/:heroesId', async(request, reply) => {
     const collection = fastify.mongo.db.collection('heroes')
     const { heroesId } = request.params
     const result = await collection.findOneAndDelete({
+        // findOneAndDelete l'affiche avant de l'éffacer
+        //deleteOne l'éfface sans l'addicher
         _id: new ObjectId(heroesId)
+
     })
     return result
 })
+
+fastify.patch('/heroes/:id', async(request, reply) => {
+    const collection = fastify.mongo.db.collection('heroes')
+    const { id } = request.params
+    const result = await collection.findOneAndUpdate({ _id: new ObjectId(id) }, { $set: request.body }, { returnDocument: 'after' }, )
+    return result
+})
+
+//Je souhaite:
+// Une route qui me permette de créer un nouvel utilisateur (user) dans une collection users
+// 		- email
+// 		- password
+// 		- role (user/admin)
+// Une route qui me permette de récupérer tout les utilisateurs
+// Une route qui me permette de récupérer un utilisateur par son id
+// Une route qui me permette de mettre à jour un utilisateur par son id
+// Une route qui me permette de supprimer un utilisateur par son id
+
+
+fastify.post('/users', async(request, reply) => {
+
+    const collection = fastify.mongo.db.collection("users")
+    const result = await collection.insertOne(request.body)
+
+    return result.ops[0]
+})
+fastify.get('/users', async() => {
+    const collection = fastify.mongo.db.collection("users")
+    const result = await collection.find({}).toArray()
+    return result
+})
+
+fastify.get('/users/:id', async(request, reply) => {
+    const collection = fastify.mongo.db.collection('users')
+    const { id } = request.params
+    const result = await collection.findOne({
+        _id: new ObjectId(id)
+    })
+    return result.adresse
+})
+
+
+fastify.delete('/users/:id', async(request, reply) => {
+    const collection = fastify.mongo.db.collection('users')
+    const { id } = request.params
+    const result = await collection.findOneAndDelete({
+        _id: new ObjectId(id)
+    }, { returnDocument: 'after' })
+    return result
+})
+
+
+fastify.patch('/users/:id', async(request, reply) => {
+    const collection = fastify.mongo.db.collection('users')
+    const { id } = request.params
+    console.log(request.body)
+    const result = await collection.findOneAndUpdate({ _id: new ObjectId(id) }, { $set: request.body }, { returnDocument: 'after' })
+    return result
+})
+
 
 
 // Run the server!
