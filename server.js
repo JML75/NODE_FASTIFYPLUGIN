@@ -11,6 +11,7 @@ fastify.register(require('fastify-jwt'), {
     secret: 'supersecret'
 })
 
+// essai de mise à jour
 
 // fastify.register(require('fastify-mongodb'), {
 //     forceClose: true,
