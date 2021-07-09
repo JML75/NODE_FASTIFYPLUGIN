@@ -1,7 +1,21 @@
 const { ObjectId } = require('mongodb')
+const createError = require('http-errors')
+
 async function routes(fastify, options) {
 
-    fastify.post('/users', async(request, reply) => {
+    const usersBody = {
+        type: 'object',
+        properties: {
+            prenom: { type: 'string'}
+        },
+        required: ['prenom']
+    }
+
+    fastify.post('/users', {
+        schema: {
+            body: usersBody
+        }
+    }, async(request, reply) => {
         const collection = fastify.mongo.db.collection("users")
 
         try {
@@ -37,8 +51,6 @@ async function routes(fastify, options) {
             return createError.Conflict(err.message)
         }
     })
-
-
 
     fastify.get('/users', async(request, reply) => {
         const collection = fastify.mongo.db.collection("users")
