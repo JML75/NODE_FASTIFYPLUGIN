@@ -13,8 +13,8 @@ POST http://localhost:4000/heroes
 Content-Type: application/json
 
 {
-	"id": "70",
-	"name": "Robin",
+	"id": "82",
+	"name": "thor",
 	"powerstats": {
 		"intelligence": "81",
 		"strength": "40",
@@ -38,7 +38,7 @@ Content-Type: application/json
 GET http://localhost:4000/heroes/69
 ###
 
-GET http://localhost:4000/heroes/60e46eb329f03fa2388dab80
+GET http://localhost:4000/heroes/60e46d7229f03fa2388dab7d
 
 ###
 
@@ -65,16 +65,17 @@ Content-Type: application/json
 {
 	"prenom": "sandrine",
 	"nom": "delestrees",
-    "email": "jim@gmail.com",
+	"password": "secret",
+    "email": "sandrine17@gmail.com",
     "role": "user",
-    "adresse": "1 rue du test"
+    "adresse": "7 rue du test"
 }
 ###
 
 GET http://localhost:4000/users
 
 ###
-GET http://localhost:4000/users/60e5c085b58ad7f5f080a79e
+GET http://localhost:4000/users/60e6bedec946c9124e58a5bf
 
 ###
 
@@ -87,7 +88,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:4000/users/60e5adc722f1e2f1bfaa4cbf
+DELETE http://localhost:4000/users/60e6bf8a1a8da7129defad9e
 
 ###
 PATCH http://localhost:4000/users/60e5b4c1c69f90f47895eb17
@@ -97,3 +98,20 @@ Content-Type: application/json
     "adresse": "7 rue du des plantes",
 	"nom": "Renda"
 }
+
+###
+POST http://localhost:4000/login
+Content-Type: application/json
+
+{
+	"prenom": "sandrine",
+	"nom": "Delestrées",
+	"password": "secret",
+    "email": "sandrine14@gmail.com",
+    "role": "user",
+    "adresse": "7 rue du test"
+}
+###
+
+GET http://localhost:4000/protected
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZTZmNWViZjYxYWRmMjMzZDNlOTc2NiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjI1NzUzNTg0fQ.Fi0OEaIX0uw8UnTPTH3wpCiz54zSwGZh5ZwccRkjGcE
